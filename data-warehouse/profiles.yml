@@ -8,5 +8,5 @@ claims_warehouse:
       dbname: "{{ env_var('PGDATABASE') }}"
       user: "{{ env_var('PGUSER') }}"
       password: "{{ env_var('PGPASSWORD') }}"
-      schema: analytics
+      schema: staging
       threads: 4

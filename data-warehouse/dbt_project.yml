@@ -3,3 +3,8 @@ version: '1.0.0'
 config-version: 2
 profile: claims_warehouse
 model-paths: ['models']
+
+models:
+  claims_warehouse:
+    staging:
+      +materialized: view
