@@ -17,3 +17,93 @@ models:
       - name: loaded_at
         data_tests:
           - not_null
+
+  - name: stg_inpatient_claims
+    description: One row per inpatient claim segment in CMS DE-SynPUF Sample 1.
+    data_tests:
+      - unique_claim_segment
+    columns:
+      - name: claim_id
+        data_tests:
+          - not_null
+      - name: claim_segment
+        data_tests:
+          - not_null
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+      - name: source_file
+        data_tests:
+          - not_null
+      - name: loaded_at
+        data_tests:
+          - not_null
+
+  - name: stg_outpatient_claims
+    description: One row per outpatient claim segment in CMS DE-SynPUF Sample 1.
+    data_tests:
+      - unique_claim_segment
+    columns:
+      - name: claim_id
+        data_tests:
+          - not_null
+      - name: claim_segment
+        data_tests:
+          - not_null
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+      - name: source_file
+        data_tests:
+          - not_null
+      - name: loaded_at
+        data_tests:
+          - not_null
+
+  - name: stg_beneficiary_summary
+    description: One row per beneficiary per reporting year in CMS DE-SynPUF Sample 1.
+    data_tests:
+      - unique_beneficiary_year
+    columns:
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+      - name: reporting_year
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [2008, 2009, 2010]
+                quote: false
+      - name: birth_date
+        data_tests:
+          - not_null
+      - name: source_file
+        data_tests:
+          - not_null
+      - name: loaded_at
+        data_tests:
+          - not_null
+
+  - name: stg_prescription_drug_events
+    description: One row per Part D prescription drug event in CMS DE-SynPUF Sample 1.
+    columns:
+      - name: prescription_drug_event_id
+        data_tests:
+          - not_null
+          - unique
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+      - name: service_date
+        data_tests:
+          - not_null
+      - name: product_service_id
+        data_tests:
+          - not_null
+      - name: source_file
+        data_tests:
+          - not_null
+      - name: loaded_at
+        data_tests:
+          - not_null

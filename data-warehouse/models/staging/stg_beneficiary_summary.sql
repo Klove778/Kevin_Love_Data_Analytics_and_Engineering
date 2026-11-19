@@ -1,0 +1,41 @@
+select
+    {{ clean_text('desynpuf_id') }} as beneficiary_id,
+    substring(source_file from '^DE1_0_([0-9]{4})_Beneficiary_Summary_File_')::integer as reporting_year,
+    {{ clean_text('bene_birth_dt') }}::date as birth_date,
+    {{ clean_text('bene_death_dt') }}::date as death_date,
+    {{ clean_text('bene_sex_ident_cd') }} as sex_code,
+    {{ clean_text('bene_race_cd') }} as race_code,
+    {{ clean_text('bene_esrd_ind') }} as esrd_indicator,
+    {{ clean_text('sp_state_code') }} as state_code,
+    {{ clean_text('bene_county_cd') }} as county_code,
+
+    {{ clean_text('bene_hi_cvrage_tot_mons') }}::integer as part_a_coverage_months,
+    {{ clean_text('bene_smi_cvrage_tot_mons') }}::integer as part_b_coverage_months,
+    {{ clean_text('bene_hmo_cvrage_tot_mons') }}::integer as hmo_coverage_months,
+    {{ clean_text('plan_cvrg_mos_num') }}::integer as part_d_coverage_months,
+
+    {{ clean_text('sp_alzhdmta') }} as alzheimers_or_related_disorder_code,
+    {{ clean_text('sp_chf') }} as heart_failure_code,
+    {{ clean_text('sp_chrnkidn') }} as chronic_kidney_disease_code,
+    {{ clean_text('sp_cncr') }} as cancer_code,
+    {{ clean_text('sp_copd') }} as copd_code,
+    {{ clean_text('sp_depressn') }} as depression_code,
+    {{ clean_text('sp_diabetes') }} as diabetes_code,
+    {{ clean_text('sp_ischmcht') }} as ischemic_heart_disease_code,
+    {{ clean_text('sp_osteoprs') }} as osteoporosis_code,
+    {{ clean_text('sp_ra_oa') }} as rheumatoid_arthritis_or_osteoarthritis_code,
+    {{ clean_text('sp_strketia') }} as stroke_or_tia_code,
+
+    {{ clean_numeric('medreimb_ip') }} as inpatient_medicare_reimbursement_amount,
+    {{ clean_numeric('benres_ip') }} as inpatient_beneficiary_responsibility_amount,
+    {{ clean_numeric('pppymt_ip') }} as inpatient_primary_payer_reimbursement_amount,
+    {{ clean_numeric('medreimb_op') }} as outpatient_medicare_reimbursement_amount,
+    {{ clean_numeric('benres_op') }} as outpatient_beneficiary_responsibility_amount,
+    {{ clean_numeric('pppymt_op') }} as outpatient_primary_payer_reimbursement_amount,
+    {{ clean_numeric('medreimb_car') }} as carrier_medicare_reimbursement_amount,
+    {{ clean_numeric('benres_car') }} as carrier_beneficiary_responsibility_amount,
+    {{ clean_numeric('pppymt_car') }} as carrier_primary_payer_reimbursement_amount,
+
+    source_file,
+    loaded_at
+from {{ source('cms_raw', 'beneficiary_summary') }}
