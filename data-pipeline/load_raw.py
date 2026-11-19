@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 import psycopg
+from dotenv import load_dotenv
 from psycopg import sql
 
 
@@ -59,7 +60,18 @@ def main():
     parser.add_argument("folder", type=Path, help="Folder containing the extracted CMS CSVs")
     parser.add_argument("--table", choices=RELEASE, help="Load just this claims or beneficiary table")
     parser.add_argument("--ask-password", action="store_true", help="Prompt for the database password")
+    parser.add_argument("--env-file", type=Path, help="Use a specific local .env file")
     args = parser.parse_args()
+    if args.env_file:
+        if not args.env_file.is_file():
+            parser.error(f"Environment file does not exist: {args.env_file}")
+        load_dotenv(args.env_file, interpolate=False, encoding="utf-8-sig")
+    else:
+        directory = Path(__file__).resolve().parent
+        for candidate in (directory / ".env", directory.parent / ".env"):
+            if candidate.is_file():
+                load_dotenv(candidate, interpolate=False, encoding="utf-8-sig")
+                break
     tables = [args.table] if args.table else list(RELEASE)
     for table in tables:
         for filename in RELEASE[table]["files"]:
