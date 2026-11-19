@@ -54,16 +54,16 @@ GROUP BY source_file;
 
 For Sample 1, expect 66,773 rows.
 
-### Set up dbt Core
+## Data warehouse
 
 From the repository root in PowerShell, use the project's virtual environment
 and the same root `.env` file. dbt Core reads `.env` from the directory where
 you run the command. Shell environment variables take precedence.
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r data-pipeline\requirements.txt
-.\.venv\Scripts\dbt.exe debug --project-dir data-pipeline/dbt --profiles-dir data-pipeline/dbt
-.\.venv\Scripts\dbt.exe parse --project-dir data-pipeline/dbt --profiles-dir data-pipeline/dbt
+.\.venv\Scripts\python.exe -m pip install -r data-warehouse\requirements.txt
+.\.venv\Scripts\dbt.exe debug --project-dir data-warehouse --profiles-dir data-warehouse
+.\.venv\Scripts\dbt.exe parse --project-dir data-warehouse --profiles-dir data-warehouse
 ```
 
 `dbt debug` checks the PostgreSQL connection. `dbt parse` validates the project
