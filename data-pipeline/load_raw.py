@@ -72,20 +72,23 @@ def main():
             if candidate.is_file():
                 load_dotenv(candidate, interpolate=False, encoding="utf-8-sig")
                 break
+    # libpq reads its connection parameters directly from the environment.
+    required = ["PGHOST", "PGPORT", "PGDATABASE", "PGUSER"]
+    settings = {}
+    if args.ask_password:
+        settings["password"] = getpass.getpass("PostgreSQL password: ")
+    else:
+        required.append("PGPASSWORD")
+    missing = [name for name in required if not os.environ.get(name)]
+    if missing:
+        parser.error("Set the following in .env or the environment: " + ", ".join(missing))
+
     tables = [args.table] if args.table else list(RELEASE)
     for table in tables:
         for filename in RELEASE[table]["files"]:
             with (args.folder / filename).open("rb") as stream:
                 check_header(stream, RELEASE[table]["columns"], filename)
 
-    settings = {
-        "host": os.getenv("PGHOST", "localhost"),
-        "port": os.getenv("PGPORT", "5432"),
-        "dbname": os.getenv("PGDATABASE", "claims_warehouse"),
-        "user": os.getenv("PGUSER", "postgres"),
-    }
-    if args.ask_password:
-        settings["password"] = getpass.getpass("PostgreSQL password: ")
     with psycopg.connect(**settings) as conn, conn.cursor() as cur:
         # Serialize runs so overlapping refreshes cannot insert duplicate copies.
         cur.execute("SELECT pg_advisory_xact_lock(480031, 1)")

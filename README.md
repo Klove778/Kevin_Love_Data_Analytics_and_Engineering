@@ -7,7 +7,7 @@ Load the eight CSVs in [CMS DE-SynPUF Sample 1](https://www.cms.gov/data-researc
 
 ### Run on Windows
 
-Install Python 3.10 or newer and start PostgreSQL. The database `claims_warehouse` must exist. Place your local `.env` in the repository root or inside `data-pipeline`. Use PostgreSQL variable names:
+Install Python 3.10 or newer and start PostgreSQL. The database `claims_warehouse` must exist. Place your local `.env` in the repository root or inside `data-pipeline`. Set all five PostgreSQL connection variables. The loader reports missing names before it opens a CSV or connects.
 
 ```dotenv
 PGHOST=localhost
