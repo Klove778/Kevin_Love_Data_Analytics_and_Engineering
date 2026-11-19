@@ -8,3 +8,6 @@ models:
   claims_warehouse:
     staging:
       +materialized: view
+    marts:
+      +schema: mart
+      +materialized: table

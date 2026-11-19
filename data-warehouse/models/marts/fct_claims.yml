@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: fct_claims
+    description: One row per inpatient, outpatient, or carrier claim ID within its claim type.
+    columns:
+      - name: claim_key
+        description: Claim type and source claim ID combined into a single key.
+        data_tests:
+          - not_null
+          - unique
+      - name: claim_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [inpatient, outpatient, carrier]
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_beneficiary_summary')
+                field: beneficiary_id
+      - name: claim_payment_amount
+        description: Reported Medicare claim payment on hospital segment 1. Null for incomplete outpatient and carrier claims.
+      - name: medicare_reimbursement_amount
+        description: Segment 1 claim payment plus the inpatient pass-through amount, when applicable.
+      - name: source_claim_segment
+        description: Segment 1 for complete hospital claims, segment 2 for incomplete outpatient claims, and null for carrier.
+      - name: is_incomplete_claim
+        description: True when an outpatient claim has segment 2 only.
+        data_tests:
+          - not_null
+      - name: primary_icd9_diagnosis_code
+        description: First-listed ICD-9 diagnosis on segment 1 or the carrier source row.
+      - name: primary_icd9_procedure_code
+        description: First-listed ICD-9 procedure on hospital segment 1.
+      - name: first_hcpcs_code
+        description: First HCPCS on hospital segment 1 or the carrier source row.
+
+  - name: fct_claim_codes
+    description: One row per populated code position on a source claim row.
+    columns:
+      - name: code_occurrence_key
+        description: Claim key, source segment, code type, and position combined into a single key.
+        data_tests:
+          - not_null
+          - unique
+      - name: claim_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_claims')
+                field: claim_key
+      - name: source_claim_segment
+        description: Hospital segment number or null for a carrier claim row.
+      - name: code_type
+        description: Distinguishes admitting, claim, and line diagnoses, ICD-9 procedures, and HCPCS.
+      - name: code_position
+        description: One-based slot within the code type on its source row. The standalone admitting diagnosis uses slot 1.
+      - name: code
+        data_tests:
+          - not_null
