@@ -64,8 +64,10 @@ you run the command. Shell environment variables take precedence.
 .\.venv\Scripts\python.exe -m pip install -r data-warehouse\requirements.txt
 .\.venv\Scripts\dbt.exe debug --project-dir data-warehouse --profiles-dir data-warehouse
 .\.venv\Scripts\dbt.exe parse --project-dir data-warehouse --profiles-dir data-warehouse
+.\.venv\Scripts\dbt.exe build --project-dir data-warehouse --profiles-dir data-warehouse --select stg_carrier_claims
 ```
 
 `dbt debug` checks the PostgreSQL connection. `dbt parse` validates the project
-without connecting. The project registers the five `raw` tables as dbt sources
-and uses `analytics` as the target schema for future models.
+without connecting. After loading `raw.carrier_claims`, the build creates the
+`staging.stg_carrier_claims` view with typed dates and amounts. It preserves one
+row per source record, the numbered claim line positions, and load metadata.
