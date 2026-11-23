@@ -1,0 +1,12 @@
+condition_name,beneficiary_years,pct_top_10_cost,avg_annual_reimbursement,inpatient_claims_per_1000,total_reimbursement
+Alzheimer's or related disorders,67503,23.67,8020.68,498.0,541419900.00
+Cancer,22484,30.51,10024.43,579.3,225389290.00
+Chronic kidney disease,58023,36.21,11480.79,695.0,666150000.00
+COPD,43773,34.56,11232.12,748.5,491663420.00
+Depression,72967,21.57,7515.09,450.2,548353530.00
+Diabetes,124747,21.00,7293.99,415.6,909903620.00
+Heart failure,101752,23.90,8042.36,476.1,818326570.00
+Ischemic heart disease,145708,19.72,6852.57,387.6,998474530.00
+Osteoporosis,56776,19.32,6872.21,389.6,390176780.00
+Rheumatoid arthritis or osteoarthritis,48822,23.18,8113.23,458.9,396104150.00
+Stroke or TIA,14204,38.54,13180.63,876.7,187217640.00

@@ -1,0 +1,4 @@
+condition_pair,reimbursement_difference,average_reimbursement_pair,average_reimbursement_comparator,inpatient_claims_per_1000_pair,inpatient_claims_per_1000_comparator,inpatient_claims_per_1000_difference,top_decile_pct_pair,top_decile_pct_comparator,top_decile_percentage_point_difference,total_pair_beneficiary_years,eligible_pair_beneficiary_years
+CKD + Heart Failure,4417.58,12254.90,7837.32,730.5,470.2,260.2,38.79,23.44,15.35,39677,33218
+CKD + Ischemic Heart Disease,4225.28,11394.45,7169.16,667.4,430.4,237.0,35.73,21.52,14.21,46849,39410
+CKD + Diabetes,3645.42,11144.75,7499.33,644.5,456.6,187.9,34.72,22.72,12.00,45570,38313

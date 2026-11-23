@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart_beneficiary_year_risk
+    description: >
+      One row per beneficiary and reporting year from dim_beneficiaries.
+      Claim measures use the calendar year of claim_end_date and exclude claims without an end date.
+    data_tests:
+      - unique_beneficiary_year
+    columns:
+      - name: beneficiary_id
+        data_tests:
+          - not_null
+      - name: reporting_year
+        data_tests:
+          - not_null
+      - name: age
+        description: Age in completed years as of December 31 of the reporting year.
+      - name: chronic_condition_count
+        description: >
+          Number of the 11 DE-SynPUF chronic condition flags coded 1 (yes).
+          Code 2 means no. The count is null if any flag is missing or unrecognized.
+      - name: total_medicare_reimbursement
+        description: Sum of Medicare reimbursement across all included claims, or zero if no amounts are present.
+      - name: inpatient_claim_count
+        description: Number of included inpatient claims, or zero if there are none.
+      - name: inpatient_reimbursement
+        description: Sum of Medicare reimbursement on included inpatient claims, or zero if no amounts are present.
+      - name: is_top_10pct_cost
+        description: >
+          True for the highest-reimbursement 10% of beneficiary-years within the reporting year,
+          with the row count rounded up and ties broken by beneficiary_id. Zero-spending rows
+          are included in the ranking population.

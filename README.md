@@ -71,3 +71,26 @@ you run the command. Shell environment variables take precedence.
 without connecting. After loading `raw.carrier_claims`, the build creates the
 `staging.stg_carrier_claims` view with typed dates and amounts. It preserves one
 row per source record, the numbered claim line positions, and load metadata.
+
+### Hospital diagnosis descriptions for Tableau
+
+The checked-in ICD-9-CM seed uses the [CMS diagnosis code titles](https://www.cms.gov/medicare/coding-billing/icd-10-codes/icd-9-cm-diagnosis-procedure-codes-abbreviated-and-full-code-titles) for releases 25 through 28, covering the 2008–2010 claims period. It uses full titles from version 28 and earlier abbreviated titles for codes absent from that release. When a code appears in multiple releases, the dimension uses the newest included title.
+
+With `mart.fct_claim_codes` already built, run from the repository root:
+
+```powershell
+.\.venv\Scripts\dbt.exe build --project-dir data-warehouse --profiles-dir data-warehouse --select +dim_diagnosis_codes tableau_hospital_claim_codes --indirect-selection cautious
+```
+
+The coverage test warns about hospital diagnosis codes with no lookup match. Unmatched diagnoses, procedure codes, and HCPCS codes remain in the export with a blank diagnosis description.
+
+With PostgreSQL's `psql` on your PATH and the same `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and `PGPASSWORD` values set in your shell, export the tested view:
+
+```powershell
+psql -v ON_ERROR_STOP=1 -c "\copy mart.tableau_hospital_claim_codes TO 'tableau-exports/fct_claim_codes_hospital.csv.part' WITH (FORMAT CSV, HEADER TRUE, ENCODING 'UTF8')"
+if ($LASTEXITCODE -eq 0) {
+    Move-Item -LiteralPath 'tableau-exports/fct_claim_codes_hospital.csv.part' -Destination 'tableau-exports/fct_claim_codes_hospital.csv' -Force
+}
+```
+
+Refresh the hospital code data source in Tableau. Its relationship to the claims CSV still uses `claim_key`.
