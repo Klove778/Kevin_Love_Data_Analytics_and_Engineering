@@ -42,6 +42,28 @@ The loader streams each CSV with PostgreSQL COPY. Source fields use lowercase na
 
 The checked-in release manifest lists the expected columns and record count for each file. Each run replaces only rows belonging to its selected source files. All selected files commit together. A failed run rolls back, and concurrent runs wait for one another.
 
+The CMS files supply no source creation or modification timestamps. The loader
+simulates them as `created_on` and `updated_at`. It backfills existing raw rows
+from their original `loaded_at` before replacing any rows. A reload preserves the
+simulated timestamps for each source record in the file, including the segment
+for hospital claims. New records start with equal simulated timestamps.
+`loaded_at` continues to record the PostgreSQL load time on every load.
+
+After upgrading an existing warehouse, run the loader for all raw tables once.
+Then rebuild the staging views and claims fact once to initialize the new
+watermark.
+
+```powershell
+.\.venv\Scripts\dbt.exe run --project-dir data-warehouse --profiles-dir data-warehouse --select path:models/staging fct_claims --full-refresh
+```
+
+For later runs, `fct_claims` merges by `claim_key` using `updated_at`. To simulate
+a source correction, change the raw claim and set its `updated_at` to a timestamp
+later than the current claims watermark, then run the model incrementally.
+Reloading a CMS file carries timestamps forward by record ID. A source payload
+correction needs an explicit timestamp change. Hospital claims use the latest
+update across segments 1 and 2 and keep the existing segment 1 payment logic.
+
 ### Verify in pgAdmin
 
 Open the Query Tool for `claims_warehouse` and run:

@@ -154,5 +154,7 @@ select
     {{ clean_text('line_icd9_dgns_cd_13') }} as line_icd9_diagnosis_code_13,
 
     source_file,
-    loaded_at
+    loaded_at,
+    created_on,
+    updated_at
 from {{ source('cms_raw', 'carrier_claims') }}

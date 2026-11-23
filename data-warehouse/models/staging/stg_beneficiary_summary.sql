@@ -37,5 +37,7 @@ select
     {{ clean_numeric('pppymt_car') }} as carrier_primary_payer_reimbursement_amount,
 
     source_file,
-    loaded_at
+    loaded_at,
+    created_on,
+    updated_at
 from {{ source('cms_raw', 'beneficiary_summary') }}

@@ -29,6 +29,12 @@ models:
         description: Claim payment plus the inpatient pass-through amount, when applicable.
       - name: source_claim_segment
         description: Segment 1 for complete hospital claims, segment 2 for incomplete hospital claims, and null for carrier.
+      - name: loaded_at
+        description: PostgreSQL ingestion timestamp of the selected source row.
+      - name: created_on
+        description: Simulated source creation timestamp. For hospital claims, the earliest creation across eligible segments.
+      - name: updated_at
+        description: Simulated source modification timestamp and incremental watermark. For hospital claims, the latest update across eligible segments.
       - name: is_incomplete_claim
         description: True when an inpatient or outpatient claim has segment 2 only.
         data_tests:
