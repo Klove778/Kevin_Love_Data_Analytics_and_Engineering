@@ -80,5 +80,7 @@ select
     {{ clean_text('hcpcs_cd_45') }} as hcpcs_code_45,
 
     source_file,
-    loaded_at
+    loaded_at,
+    created_on,
+    updated_at
 from {{ source('cms_raw', 'outpatient_claims') }}

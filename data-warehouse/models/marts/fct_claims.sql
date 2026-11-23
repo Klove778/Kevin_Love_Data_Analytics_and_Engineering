@@ -5,19 +5,69 @@
     on_schema_change='append_new_columns'
 ) }}
 
-with inpatient_claims as (
+with
+{% if is_incremental() %}
+watermark as (
+    select coalesce(max(updated_at), '-infinity'::timestamptz) as updated_at
+    from {{ this }}
+),
+
+source_updates as (
+    {% for claim_type in ('inpatient', 'outpatient', 'carrier') %}
+    select '{{ claim_type }}' as claim_type, claim_id, updated_at
+    from {{ ref('stg_' ~ claim_type ~ '_claims') }}
+    where updated_at >= (select updated_at from watermark)
+    {% if claim_type != 'carrier' %}
+        and claim_segment in (1, 2)
+    {% endif %}
+    {% if not loop.last %}union all{% endif %}
+    {% endfor %}
+),
+
+changed_claims as (
+    select claim_type, claim_id
+    from source_updates
+    where updated_at > (select updated_at from watermark)
+
+    union
+
+    -- Include new claims at the watermark without reprocessing existing ties.
+    select source.claim_type, source.claim_id
+    from source_updates as source
+    where source.updated_at = (select updated_at from watermark)
+        and not exists (
+            select 1
+            from {{ this }} as target
+            where target.claim_key = source.claim_type || ':' || source.claim_id
+                and target.updated_at = (select updated_at from watermark)
+        )
+),
+{% endif %}
+
+inpatient_claims as (
+    -- Select the authoritative segment after reading every segment for a changed claim.
     select distinct on (claim_id)
-        *
+        *,
+        min(created_on) over (partition by claim_id) as claim_created_on,
+        max(updated_at) over (partition by claim_id) as claim_updated_at
     from {{ ref('stg_inpatient_claims') }}
     where claim_segment in (1, 2)
+    {% if is_incremental() %}
+        and claim_id in (select claim_id from changed_claims where claim_type = 'inpatient')
+    {% endif %}
     order by claim_id, claim_segment
 ),
 
 outpatient_claims as (
     select distinct on (claim_id)
-        *
+        *,
+        min(created_on) over (partition by claim_id) as claim_created_on,
+        max(updated_at) over (partition by claim_id) as claim_updated_at
     from {{ ref('stg_outpatient_claims') }}
     where claim_segment in (1, 2)
+    {% if is_incremental() %}
+        and claim_id in (select claim_id from changed_claims where claim_type = 'outpatient')
+    {% endif %}
     order by claim_id, claim_segment
 ),
 
@@ -43,7 +93,9 @@ claims as (
         claim_segment as source_claim_segment,
         claim_segment = 2 as is_incomplete_claim,
         source_file,
-        loaded_at
+        loaded_at,
+        claim_created_on as created_on,
+        claim_updated_at as updated_at
     from inpatient_claims
 
     union all
@@ -65,7 +117,9 @@ claims as (
         claim_segment as source_claim_segment,
         claim_segment = 2 as is_incomplete_claim,
         source_file,
-        loaded_at
+        loaded_at,
+        claim_created_on as created_on,
+        claim_updated_at as updated_at
     from outpatient_claims
 
     union all
@@ -84,9 +138,17 @@ claims as (
         performing_physician_npi_1 as provider_npi,
         null::integer as source_claim_segment,
         false as is_incomplete_claim,
-        source_file,
-        loaded_at
-    from {{ ref('stg_carrier_claims') }} as carrier
+        carrier.source_file,
+        carrier.loaded_at,
+        carrier.created_on,
+        carrier.updated_at
+    from (
+        select *
+        from {{ ref('stg_carrier_claims') }}
+        {% if is_incremental() %}
+        where claim_id in (select claim_id from changed_claims where claim_type = 'carrier')
+        {% endif %}
+    ) as carrier
     cross join lateral (
         select coalesce(sum(payment_amount), 0) as paid_amount
         from (
@@ -118,11 +180,7 @@ select
     is_incomplete_claim,
     source_file,
     loaded_at,
-    provider_npi
+    provider_npi,
+    created_on,
+    updated_at
 from claims
-{% if is_incremental() %}
-where loaded_at >= (
-    select coalesce(max(loaded_at), '-infinity'::timestamptz)
-    from {{ this }}
-)
-{% endif %}

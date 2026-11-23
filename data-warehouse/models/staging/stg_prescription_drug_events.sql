@@ -8,5 +8,7 @@ select
     {{ clean_numeric('ptnt_pay_amt') }} as patient_pay_amount,
     {{ clean_numeric('tot_rx_cst_amt') }} as gross_drug_cost_amount,
     source_file,
-    loaded_at
+    loaded_at,
+    created_on,
+    updated_at
 from {{ source('cms_raw', 'prescription_drug_events') }}

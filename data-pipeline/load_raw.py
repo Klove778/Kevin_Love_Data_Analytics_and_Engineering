@@ -13,6 +13,13 @@ from psycopg import sql
 
 RELEASE = json.loads(Path(__file__).with_name("sample_1.json").read_text())
 CHUNK_SIZE = 1024 * 1024
+SOURCE_KEYS = {
+    "beneficiary_summary": ("desynpuf_id",),
+    "carrier_claims": ("clm_id",),
+    "inpatient_claims": ("clm_id", "segment"),
+    "outpatient_claims": ("clm_id", "segment"),
+    "prescription_drug_events": ("pde_id",),
+}
 
 
 def check_header(stream, expected, filename):
@@ -21,18 +28,51 @@ def check_header(stream, expected, filename):
         raise ValueError(f"{filename}: CSV columns differ from Sample 1")
 
 
+def ensure_source_timestamps(cur, target):
+    cur.execute("""
+        SELECT count(*) = 2
+        FROM pg_attribute
+        WHERE attrelid = %s::regclass
+          AND attname IN ('created_on', 'updated_at')
+          AND attnotnull AND NOT attisdropped
+    """, (target.as_string(cur),))
+    if cur.fetchone()[0]:
+        return
+
+    cur.execute(sql.SQL("""
+        ALTER TABLE {}
+            ADD COLUMN IF NOT EXISTS created_on timestamptz,
+            ADD COLUMN IF NOT EXISTS updated_at timestamptz
+    """).format(target))
+    cur.execute(sql.SQL("""
+        UPDATE {}
+        SET created_on = coalesce(created_on, loaded_at),
+            updated_at = coalesce(updated_at, created_on, loaded_at)
+        WHERE created_on IS NULL OR updated_at IS NULL
+    """).format(target))
+    cur.execute(sql.SQL("""
+        ALTER TABLE {}
+            ALTER COLUMN created_on SET NOT NULL,
+            ALTER COLUMN updated_at SET NOT NULL
+    """).format(target))
+
+
 def load_table(cur, folder, table, spec):
     names = [name.lower() for name in spec["columns"]]
     columns = sql.SQL(", ").join(sql.Identifier(name) for name in names)
+    key_columns = sql.SQL(", ").join(map(sql.Identifier, SOURCE_KEYS[table]))
+    incoming_columns = sql.SQL(", ").join(sql.Identifier("incoming", name) for name in names)
     definitions = sql.SQL(", ").join(
         sql.SQL("{} text").format(sql.Identifier(name)) for name in names
     )
     target = sql.Identifier("raw", table)
     cur.execute(sql.SQL("""
         CREATE TABLE IF NOT EXISTS {} (
-            {}, source_file text NOT NULL, loaded_at timestamptz NOT NULL DEFAULT now()
+            {}, source_file text NOT NULL, loaded_at timestamptz NOT NULL DEFAULT now(),
+            created_on timestamptz NOT NULL, updated_at timestamptz NOT NULL
         )
     """).format(target, definitions))
+    ensure_source_timestamps(cur, target)
     cur.execute(sql.SQL("CREATE TEMP TABLE incoming ({}) ON COMMIT DROP").format(definitions))
     for filename, expected in spec["files"].items():
         with (folder / filename).open("rb") as stream:
@@ -45,11 +85,26 @@ def load_table(cur, folder, table, spec):
         count = cur.fetchone()[0]
         if count != expected:
             raise ValueError(f"{filename}: expected {expected:,} records, received {count:,}")
-        cur.execute(sql.SQL("DELETE FROM {} WHERE source_file = %s").format(target), (filename,))
+        # CMS files have no source timestamps. Preserve the simulation on a file reload.
         cur.execute(sql.SQL("""
-            INSERT INTO {} ({}, source_file)
-            SELECT {}, %s FROM pg_temp.incoming
-        """).format(target, columns, columns), (filename,))
+            WITH replaced AS (
+                DELETE FROM {} WHERE source_file = %s
+                RETURNING {}, created_on, updated_at
+            ), source_timestamps AS (
+                SELECT {}, min(created_on) AS created_on, max(updated_at) AS updated_at
+                FROM replaced
+                GROUP BY {}
+            )
+            INSERT INTO {} ({}, source_file, created_on, updated_at)
+            SELECT {}, %s,
+                coalesce(source_timestamps.created_on, statement_timestamp()),
+                coalesce(source_timestamps.updated_at, statement_timestamp())
+            FROM pg_temp.incoming AS incoming
+            LEFT JOIN source_timestamps USING ({})
+        """).format(
+            target, key_columns, key_columns, key_columns,
+            target, columns, incoming_columns, key_columns,
+        ), (filename, filename))
         print(f"  {filename}: {cur.rowcount:,} rows", flush=True)
         cur.execute("TRUNCATE pg_temp.incoming")
     cur.execute("DROP TABLE pg_temp.incoming")
