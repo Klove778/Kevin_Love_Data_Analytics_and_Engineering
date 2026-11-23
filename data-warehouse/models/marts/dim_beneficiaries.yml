@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_beneficiaries
+    description: >
+      One row per beneficiary per reporting year in the DE-SynPUF annual summaries.
+      Residence, coverage months, and health indicators describe that reporting year.
+      Annual reimbursement amounts are available in stg_beneficiary_summary.
+    data_tests:
+      - unique_beneficiary_year
+    columns:
+      - name: beneficiary_id
+        description: Synthetic beneficiary identifier. Pair with reporting_year to identify a row.
+        data_tests:
+          - not_null
+      - name: reporting_year
+        description: Reporting year of the annual beneficiary summary.
+        data_tests:
+          - not_null

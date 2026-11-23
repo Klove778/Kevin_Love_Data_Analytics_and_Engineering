@@ -1,0 +1,23 @@
+condition_name,condition_status,beneficiary_years,avg_annual_reimbursement,pct_top_10_cost,inpatient_claims_per_1000,reimbursement_difference
+Stroke or TIA,With condition,14204,13180.63,38.54,876.7,9979.59
+Stroke or TIA,Without condition,329440,3201.04,8.77,164.7,9979.59
+Chronic kidney disease,With condition,58023,11480.79,36.21,695.0,9465.47
+Chronic kidney disease,Without condition,285621,2015.32,4.68,92.3,9465.47
+COPD,With condition,43773,11232.12,34.56,748.5,8730.69
+COPD,Without condition,299871,2501.42,6.42,113.2,8730.69
+Cancer,With condition,22484,10024.43,30.51,579.3,6859.72
+Cancer,Without condition,321160,3164.71,8.56,167.1,6859.72
+Heart failure,With condition,101752,8042.36,23.90,476.1,6291.83
+Heart failure,Without condition,241892,1750.54,4.15,75.5,6291.83
+Diabetes,With condition,124747,7293.99,21.00,415.6,5777.92
+Diabetes,Without condition,218897,1516.07,3.73,67.9,5777.92
+Ischemic heart disease,With condition,145708,6852.57,19.72,387.6,5623.42
+Ischemic heart disease,Without condition,197936,1229.15,2.85,51.7,5623.42
+Alzheimer's or related disorders,With condition,67503,8020.68,23.67,498.0,5484.48
+Alzheimer's or related disorders,Without condition,276141,2536.20,6.66,119.8,5484.48
+Rheumatoid arthritis or osteoarthritis,With condition,48822,8113.23,23.18,458.9,5244.84
+Rheumatoid arthritis or osteoarthritis,Without condition,294822,2868.39,7.82,150.3,5244.84
+Depression,With condition,72967,7515.09,21.57,450.2,4953.31
+Depression,Without condition,270677,2561.78,6.88,125.1,4953.31
+Osteoporosis,With condition,56776,6872.21,19.32,389.6,3903.63
+Osteoporosis,Without condition,286868,2968.58,8.16,155.4,3903.63

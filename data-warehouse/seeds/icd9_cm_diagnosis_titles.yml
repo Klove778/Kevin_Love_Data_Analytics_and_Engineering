@@ -1,0 +1,12 @@
+version: 2
+
+seeds:
+  - name: icd9_cm_diagnosis_titles
+    description: >
+      CMS ICD-9-CM diagnosis titles from versions 25 through 28. Uses the
+      newest available title for each code across those releases.
+    config:
+      column_types:
+        diagnosis_code: text
+        diagnosis_description: text
+        cms_version: integer

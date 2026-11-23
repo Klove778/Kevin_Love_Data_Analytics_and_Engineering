@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: dim_diagnosis_codes
+    description: One row per normalized ICD-9-CM diagnosis code in the CMS reference.
+    columns:
+      - name: diagnosis_code
+        description: Undotted ICD-9-CM diagnosis code in uppercase text, with leading zeros preserved.
+        data_tests:
+          - not_null
+          - unique
+      - name: diagnosis_description
+        description: CMS diagnosis title from the newest included release containing the code.
+        data_tests:
+          - not_null
+      - name: cms_version
+        description: CMS release version that supplied the diagnosis title.
+
+  - name: tableau_hospital_claim_codes
+    description: One row per inpatient or outpatient code occurrence for the Tableau hospital CSV.
+    columns:
+      - name: code_occurrence_key
+        description: Code occurrence key inherited from fct_claim_codes.
+      - name: claim_key
+        description: Claim key inherited from fct_claim_codes for relating the export to fct_claims.
+      - name: diagnosis_description
+        description: CMS diagnosis title when an admitting or claim diagnosis matches the lookup.

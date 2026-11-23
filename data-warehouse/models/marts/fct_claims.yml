@@ -19,16 +19,18 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_beneficiary_summary')
+                to: ref('dim_beneficiaries')
                 field: beneficiary_id
       - name: claim_payment_amount
-        description: Reported Medicare claim payment on hospital segment 1. Null for incomplete outpatient and carrier claims.
+        description: >
+          Reported Medicare claim payment on hospital segment 1, or the sum of eligible
+          Medicare line payments for carrier claims. Null for incomplete hospital claims.
       - name: medicare_reimbursement_amount
-        description: Segment 1 claim payment plus the inpatient pass-through amount, when applicable.
+        description: Claim payment plus the inpatient pass-through amount, when applicable.
       - name: source_claim_segment
-        description: Segment 1 for complete hospital claims, segment 2 for incomplete outpatient claims, and null for carrier.
+        description: Segment 1 for complete hospital claims, segment 2 for incomplete hospital claims, and null for carrier.
       - name: is_incomplete_claim
-        description: True when an outpatient claim has segment 2 only.
+        description: True when an inpatient or outpatient claim has segment 2 only.
         data_tests:
           - not_null
       - name: primary_icd9_diagnosis_code
@@ -37,6 +39,12 @@ models:
         description: First-listed ICD-9 procedure on hospital segment 1.
       - name: first_hcpcs_code
         description: First HCPCS on hospital segment 1 or the carrier source row.
+      - name: provider_npi
+        description: >
+          First available operating, attending, or other physician NPI from hospital
+          segment 1, in that order, or performing physician NPI from carrier line 1.
+          Null when those source NPIs are missing or the hospital claim has only segment 2.
+          DE-SynPUF physician identifiers are synthetic.
 
   - name: fct_claim_codes
     description: One row per populated code position on a source claim row.
