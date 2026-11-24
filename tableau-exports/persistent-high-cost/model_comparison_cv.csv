@@ -1,0 +1,13 @@
+method_order,method,correct_predictions,review_capacity,precision_pct,recall_pct,actual_positives,evaluated_beneficiaries,precision_ci_low_pct,precision_ci_high_pct,recall_ci_low_pct,recall_ci_high_pct,new_correct_vs_outpatient_carrier,lost_correct_vs_outpatient_carrier,evaluation,baseline_year,outcome_year,evaluation_period,extra_correct_vs_outpatient_carrier,precision_delta_vs_outpatient_carrier_pp,delta_ci_low_pp,delta_ci_high_pp
+1,total dollars,430,1108,38.81,31.48,1366,4430,35.98,41.71,29.07,33.99,148,365,"Original training cohort, five outer folds",2008,2009,2008 to 2009,-217,-19.58,,
+2,non-inpatient dollars,647,1108,58.39,47.36,1366,4430,55.47,61.26,44.73,50.02,0,0,"Original training cohort, five outer folds",2008,2009,2008 to 2009,0,0.0,,
+3,non-inpatient minus peak quarter,646,1108,58.3,47.29,1366,4430,55.38,61.17,44.66,49.94,54,55,"Original training cohort, five outer folds",2008,2009,2008 to 2009,-1,-0.09,-1.62,1.62
+4,mix,651,1108,58.75,47.66,1366,4430,55.83,61.62,45.02,50.31,67,63,"Original training cohort, five outer folds",2008,2009,2008 to 2009,4,0.36,-1.71,1.62
+5,mix + conditions,648,1108,58.48,47.44,1366,4430,55.56,61.35,44.8,50.09,78,77,"Original training cohort, five outer folds",2008,2009,2008 to 2009,1,0.09,-1.9,1.81
+6,mix + recurrence,658,1108,59.39,48.17,1366,4430,56.47,62.24,45.53,50.82,90,79,"Original training cohort, five outer folds",2008,2009,2008 to 2009,11,0.99,-1.17,2.71
+7,mix + conditions + codes,647,1108,58.39,47.36,1366,4430,55.47,61.26,44.73,50.02,107,107,"Original training cohort, five outer folds",2008,2009,2008 to 2009,0,0.0,-2.26,2.17
+8,mix + recurrence + conditions + codes,655,1108,59.12,47.95,1366,4430,56.19,61.97,45.31,50.6,124,116,"Original training cohort, five outer folds",2008,2009,2008 to 2009,8,0.72,-1.53,2.98
+9,"split ESRD, mix + conditions",645,1108,58.21,47.22,1366,4430,55.29,61.08,44.58,49.87,101,103,"Original training cohort, five outer folds",2008,2009,2008 to 2009,-2,-0.18,-2.26,1.99
+10,"split ESRD, all features",659,1108,59.48,48.24,1366,4430,56.56,62.33,45.6,50.89,126,114,"Original training cohort, five outer folds",2008,2009,2008 to 2009,12,1.08,-1.17,3.25
+11,"nested selected, prefer simple",641,1108,57.85,46.93,1366,4430,54.92,60.73,44.29,49.58,8,14,"Original training cohort, five outer folds",2008,2009,2008 to 2009,-6,-0.54,-1.35,0.09
+12,"nested selected, highest inner yield",651,1108,58.75,47.66,1366,4430,55.83,61.62,45.02,50.31,114,110,"Original training cohort, five outer folds",2008,2009,2008 to 2009,4,0.36,-1.71,2.53

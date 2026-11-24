@@ -1,0 +1,24 @@
+sort_order,section,population,metric,numerator,denominator,value_pct,standardized_gap_pp,ci_low_pp,ci_high_pp,standardized_rate_no_inpatient_pct,standardized_rate_with_inpatient_pct,matched_without_inpatient,matched_with_inpatient,baseline_year,outcome_year,unit
+1,Baseline prevalence,All 275 without inpatient claims,CKD flag,229,275,83.27,,,,,,,,2008,2009,beneficiaries
+2,Baseline prevalence,All 275 without inpatient claims,ESRD flag,210,275,76.36,,,,,,,,2008,2009,beneficiaries
+3,Baseline prevalence,All 275 without inpatient claims,CKD or ESRD flag,234,275,85.09,,,,,,,,2008,2009,beneficiaries
+4,Baseline prevalence,All 275 without inpatient claims,Both CKD and ESRD flags,205,275,74.55,,,,,,,,2008,2009,beneficiaries
+5,Baseline prevalence,All 275 without inpatient claims,Dialysis procedure or management,204,275,74.18,,,,,,,,2008,2009,beneficiaries
+6,Baseline prevalence,Persistent cases without baseline inpatient claims,ESRD flag,194,218,88.99,,,,,,,,2008,2009,beneficiaries
+7,Spending concentration,All 275 without inpatient claims,Outpatient reimbursement on dialysis-coded claims,3035980.00,4192520.00,72.41,,,,,,,,2008,2009,USD
+8,Spending concentration,All 275 without inpatient claims,Dialysis-coded outpatient claims and eligible carrier lines,3193260.00,6125080.00,52.13,,,,,,,,2008,2009,USD
+10,Observed persistence,No baseline inpatient claim,all,218,275,79.27,,,,,,,,2008,2009,beneficiaries
+11,Observed persistence,Baseline inpatient claim,all,1727,6093,28.34,,,,,,,,2008,2009,beneficiaries
+12,Standardized persistence gap,Comparable strata,all,,,,52.15,45.93,58.36,77.31,25.17,216,1431,2008,2009,beneficiaries
+20,Observed persistence,No baseline inpatient claim,no ESRD flag,24,65,36.92,,,,,,,,2008,2009,beneficiaries
+21,Observed persistence,Baseline inpatient claim,no ESRD flag,991,4326,22.91,,,,,,,,2008,2009,beneficiaries
+22,Standardized persistence gap,Comparable strata,no ESRD flag,,,,17.96,5.02,30.89,38.00,20.04,50,348,2008,2009,beneficiaries
+30,Observed persistence,No baseline inpatient claim,no ESRD flag or directly coded dialysis/management,21,57,36.84,,,,,,,,2008,2009,beneficiaries
+31,Observed persistence,Baseline inpatient claim,no ESRD flag or directly coded dialysis/management,865,3895,22.21,,,,,,,,2008,2009,beneficiaries
+32,Standardized persistence gap,Comparable strata,no ESRD flag or directly coded dialysis/management,,,,18.64,4.61,32.67,38.10,19.45,42,295,2008,2009,beneficiaries
+40,Observed persistence,No baseline inpatient claim,also exclude ESRD/dialysis diagnosis and dialysis-specific supplies/drugs,20,55,36.36,,,,,,,,2008,2009,beneficiaries
+41,Observed persistence,Baseline inpatient claim,also exclude ESRD/dialysis diagnosis and dialysis-specific supplies/drugs,737,3449,21.37,,,,,,,,2008,2009,beneficiaries
+42,Standardized persistence gap,Comparable strata,also exclude ESRD/dialysis diagnosis and dialysis-specific supplies/drugs,,,,17.93,3.64,32.23,36.59,18.65,41,254,2008,2009,beneficiaries
+50,Observed persistence,No baseline inpatient claim,no baseline CKD or ESRD or dialysis/management,11,38,28.95,,,,,,,,2008,2009,beneficiaries
+51,Observed persistence,Baseline inpatient claim,no baseline CKD or ESRD or dialysis/management,313,1626,19.25,,,,,,,,2008,2009,beneficiaries
+52,Standardized persistence gap,Comparable strata,no baseline CKD or ESRD or dialysis/management,,,,19.24,-1.54,40.02,35.00,15.76,20,93,2008,2009,beneficiaries
