@@ -49,6 +49,5 @@ These results are from *synthetic*, historical data. They describe associations,
 | [dbt marts](data-warehouse/models/marts/) | Claims, diagnoses, beneficiaries, and risk models |
 | [Data quality tests](data-warehouse/tests/) | Payment reconciliation and other checks |
 | [Analysis SQL](data-warehouse/analyses/) | Chronic-condition and comorbidity comparisons |
-| [Local setup guide](docs/SETUP.md) | Database configuration, commands, and exports |
 
 **Data source:** [CMS DE-SynPUF Sample 1](https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-claims-synthetic-public-use-files/cms-2008-2010-data-entrepreneurs-synthetic-public-use-file-de-synpuf/de10-sample-1). These are artificial records intended for research and development; the project does not use real patient data.
