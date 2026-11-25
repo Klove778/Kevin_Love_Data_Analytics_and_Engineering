@@ -16,7 +16,7 @@ Claims data is useful for understanding healthcare costs, but it is not particul
 
 If those details aren't handled correctly, it's easy to double-count payments or produce misleading utilization measures.
 
-The aim was to demonstrate a decade+ of healthcare data experience by building a simplified claims data model and use it to ask questions a health plan or care-management team might actually care about: Where is spending concentrated? Which populations use more inpatient care? What changes when chronic conditions occur together?
+The aim was to demonstrate a decade+ of healthcare data experience by building a simplified claims data model and use it to ask questions a health plan or care-management team might ask: Where is spending concentrated? Which populations use more inpatient care? What changes when chronic conditions occur together?
 
 ## What the analysis found
 
