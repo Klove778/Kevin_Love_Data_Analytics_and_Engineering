@@ -1,0 +1,5 @@
+method_order,method,correct_predictions,review_capacity,precision_pct,recall_pct,actual_positives,evaluated_beneficiaries,training_beneficiaries,extra_correct_vs_total_spending,new_correct_vs_total_spending,lost_correct_vs_total_spending,evaluation,baseline_year,outcome_year,evaluation_period
+1,Total prior-year spending,163,485,33.61,28.15,579,1938,4430,0,0,0,Original held-out beneficiaries,2008,2009,2008 to 2009
+2,Total spending plus ESRD,243,485,50.1,41.97,579,1938,4430,80,137,57,Original held-out beneficiaries,2008,2009,2008 to 2009
+3,Outpatient plus carrier spending,260,485,53.61,44.91,579,1938,4430,97,163,66,Original held-out beneficiaries,2008,2009,2008 to 2009
+4,Full service-mix model,268,485,55.26,46.29,579,1938,4430,105,164,59,Original held-out beneficiaries,2008,2009,2008 to 2009

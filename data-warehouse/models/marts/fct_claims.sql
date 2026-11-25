@@ -138,29 +138,33 @@ claims as (
         performing_physician_npi_1 as provider_npi,
         null::integer as source_claim_segment,
         false as is_incomplete_claim,
-        carrier.source_file,
-        carrier.loaded_at,
-        carrier.created_on,
-        carrier.updated_at
+        source_file,
+        loaded_at,
+        created_on,
+        updated_at
     from (
-        select *
-        from {{ ref('stg_carrier_claims') }}
+        select
+            carrier.*,
+            0
+            {% for line in range(1, 14) %}
+                + case
+                      when line_processing_indicator_code_{{ line }} = 'A'
+                        or (
+                            line_processing_indicator_code_{{ line }} in ('R', 'S')
+                            and line_allowed_charge_amount_{{ line }} > 0
+                        )
+                      then coalesce(line_payment_amount_{{ line }}, 0)
+                      else 0
+                  end
+            {% endfor %} as paid_amount
+        from {{ ref('stg_carrier_claims') }} as carrier
         {% if is_incremental() %}
-        where claim_id in (select claim_id from changed_claims where claim_type = 'carrier')
+        where claim_id in (
+            select claim_id
+            from changed_claims
+            where claim_type = 'carrier'
+        )
         {% endif %}
-    ) as carrier
-    cross join lateral (
-        select coalesce(sum(payment_amount), 0) as paid_amount
-        from (
-            values
-                {% for line in range(1, 14) -%}
-                (carrier.line_payment_amount_{{ line }},
-                 carrier.line_processing_indicator_code_{{ line }},
-                 carrier.line_allowed_charge_amount_{{ line }}){{ ',' if not loop.last }}
-                {% endfor %}
-        ) as claim_line(payment_amount, processing_indicator, allowed_charge_amount)
-        where processing_indicator = 'A'
-            or (processing_indicator in ('R', 'S') and allowed_charge_amount > 0)
     ) as carrier_payment
 )
 
